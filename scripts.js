@@ -58,16 +58,21 @@ const getProducts = () => {
   const products = [];
   const trs = [...document.querySelectorAll('tr.search-result-item')].slice(0, quantity);
   const textareas = document.querySelectorAll('textarea');
+  const category = document.querySelector('input[name="category"]').value;
+  const subcategory = document.querySelector('input[name="subcategory"]').value;
+
   for (let i in trs) {
     const tr = trs[i];
 
     if (!tr.querySelector('.ac-product-price:last-child')) continue;
     
     products.push({
-      _id: tr.querySelector('.product-name a')
+      amazonId: tr.querySelector('.product-name a')
         .href
         .match(/product\/(.*)?\?/)[1],
       name: tr.querySelector('.product-name a').textContent,
+      category: category,
+      subcategory: subcategory,
       price: parseFloat(
         tr.querySelector('.ac-product-price:last-child')
           .textContent
@@ -77,8 +82,8 @@ const getProducts = () => {
       ),
       image: tr.querySelector('.product-image > img').src,
       links: {
-        amazon: tr.querySelector('.product-name a').href,
-        afilliates: textareas.item(i).value
+        amazon: tr.querySelector('.product-name a').href.replace(/\?.*$/, ''),
+        affiliates: textareas.item(i).value
       }
     });
   }
@@ -96,7 +101,5 @@ const save = products => {
     document.body.appendChild(link);
     link.click();
 }
-
-
 
 init();
