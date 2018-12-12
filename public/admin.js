@@ -1,3 +1,9 @@
+const ENV = 'local';
+const SERVER = {
+  local: 'http://localhost:3000',
+  prod: 'http://35.180.39.52:3000'
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   update();
   
@@ -15,6 +21,10 @@ window.addEventListener('DOMContentLoaded', () => {
   
   document.querySelectorAll('.modal .link')
     .forEach(elem => elem.addEventListener('click', handleLink));
+
+  document.querySelector('#upload')
+    .addEventListener('click', handleUpload);
+
 });
 
 const handlePrevious = event => {
@@ -37,7 +47,7 @@ const update = event => {
   const perPage = document.querySelector('select');
   const page = document.querySelector('#page');
 
-  axios.get(`http://localhost:3000/products?page=${page.value || 1}&per_page=${perPage.value || 1}`)
+  axios.get(`${SERVER[ENV]}/products?page=${page.value || 1}&per_page=${perPage.value || 1}`)
     .then(response => display(response.data))
     .catch(error => console.log(error));
 }
@@ -118,7 +128,7 @@ const handleTableSave = event => {
   const tr = event.target.parentNode.parentNode.parentNode;
   tr.querySelector('#id')
 
-  axios.put(`http://localhost:3000/products/${tr.querySelector('#id').textContent}`,{
+  axios.put(`${SERVER[ENV]}/products/${tr.querySelector('#id').textContent}`,{
     name: tr.querySelector('#name').value,
     price: tr.querySelector('#price').value
   })
@@ -128,10 +138,10 @@ const handleTableSave = event => {
 
 const handleModalSave = event => {
   const modal = document.querySelector('.modal');
-  axios.put(`http://localhost:3000/products/${modal.querySelector('#id').textContent}`,{
+  axios.put(`${SERVER[ENV]}/products/${modal.querySelector('#id').textContent}`,{
     name: modal.querySelector('#name').value,
     price: modal.querySelector('#price').value,
-    image: modal.querySelector('#image').src,
+    image: modal.querySelector('#image').value,
     links: {
       amazon: modal.querySelector('#amazon').value,
       affiliates: modal.querySelector('#affiliates').value
@@ -142,14 +152,14 @@ const handleModalSave = event => {
 }
 
 const handleRemove = event => {
-  const tr = event.target.parentNode.parentNode;
+  const tr = event.target.parentNode.parentNode.parentNode;
 
-  axios.delete(`http://localhost:3000/products/${tr.querySelector('#id').value}`)
+  axios.delete(`${SERVER[ENV]}/products/${tr.querySelector('#id').textContent}`)
     .then(response => tr.parentNode.removeChild(tr))
     .catch(error => console.log(error));
 }
 
-const handleEdit = ({_id: id, name, price, image, /* links */ link}) => {
+const handleEdit = ({_id: id, name, price, image, links}) => {
   const modal = document.querySelector('.modal');
   
   modal.querySelector('#id').textContent = id;
@@ -157,8 +167,8 @@ const handleEdit = ({_id: id, name, price, image, /* links */ link}) => {
   modal.querySelector('#price').value = price;
   modal.querySelector('img#image').src = image;
   modal.querySelector('input#image').value = image;
-  modal.querySelector('#amazon').value = link/* link.amazon */;
-  /* modal.querySelector('#affiliates').value = links.affiliates; */
+  modal.querySelector('#amazon').value = links.amazon;
+  modal.querySelector('#affiliates').value = links.affiliates;
 
   modal.style.display = 'block';
 }
@@ -172,3 +182,23 @@ const handleLink = event => {
 
   window.open(link, '_blank');
 }
+
+const handleUpload = async event => {
+  const file = document.querySelector('input[type="file"]').files[0]
+
+  const products = await readJSON(file);
+  
+  products.forEach(product => delete product._id);
+
+  for (let product of products) {
+    axios.post(`${SERVER[ENV]}/products`, product);
+  }
+}
+
+const readJSON = json => new Promise((resolve, reject) => {
+  const reader = new FileReader;
+
+  reader.onload = event => resolve(JSON.parse(event.target.result))
+
+  reader.readAsText(json, 'UTF-8');
+});
