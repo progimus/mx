@@ -5,8 +5,7 @@ const seller = '';
 const quantity = 5;
 
 const init = async () => {
-  script('https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js');
-  script('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js');
+  /* script('https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js'); */
   
   await scroll(quantity);
   
