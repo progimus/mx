@@ -2,7 +2,7 @@ const category = '';
 const subcategory = '';
 const search = '';
 const seller = '';
-const quantity = 5;
+const quantity = 20;
 
 const init = async () => {
   /* script('https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js'); */

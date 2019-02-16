@@ -125,8 +125,7 @@ const display = data => {
 }
 
 const handleTableSave = event => {
-  const tr = event.target.parentNode.parentNode.parentNode;
-  tr.querySelector('#id')
+  const tr = event.target.closest('tr');
 
   axios.put(`${SERVER[ENV]}/products/${tr.querySelector('#id').textContent}`,{
     name: tr.querySelector('#name').value,
@@ -152,7 +151,7 @@ const handleModalSave = event => {
 }
 
 const handleRemove = event => {
-  const tr = event.target.parentNode.parentNode.parentNode;
+  const tr = event.target.closest('tr');
 
   axios.delete(`${SERVER[ENV]}/products/${tr.querySelector('#id').textContent}`)
     .then(response => tr.parentNode.removeChild(tr))
