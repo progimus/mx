@@ -109,5 +109,4 @@ app.delete('/products/:id', (req, res) => {
 https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/moreorlessexpensive.com-0001/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/moreorlessexpensive.com-0001/cert.pem'),
-  ca: fs.readFileSync('/etc/letsencrypt/live/moreorlessexpensive.com-0001/fullchain.pem'),
 }, app).listen(3000, () => console.log('Server running on port 3000.'))
