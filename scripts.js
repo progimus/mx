@@ -3,10 +3,9 @@ const subcategory = '';
 const search = '';
 const seller = '';
 const quantity = 20;
+const locale = 'es';
 
-const init = async () => {
-  /* script('https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js'); */
-  
+const init = async () => {  
   await scroll(quantity);
   
   const trs = [...document.querySelectorAll('tr.search-result-item')].slice(0, quantity);
@@ -83,7 +82,8 @@ const getProducts = () => {
       links: {
         amazon: tr.querySelector('.product-name a').href.replace(/\?.*$/, ''),
         affiliates: textareas.item(i).value
-      }
+      },
+      locale: locale
     });
   }
 
@@ -91,14 +91,12 @@ const getProducts = () => {
 }
 
 const save = products => {
-    const link = document.createElement('a');
-    const content = JSON.stringify(products);
-    link.id = 'download1234';
-    link.appendChild(document.createTextNode('asdasdasd'));
-    link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-    link.setAttribute('download', `products.json`);
-    document.body.appendChild(link);
-    link.click();
+  const link = document.createElement('a');
+  const content = JSON.stringify(products);
+  link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+  link.setAttribute('download', `products.json`);
+  document.body.appendChild(link);
+  link.click();
 }
 
 init();

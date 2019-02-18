@@ -1,12 +1,15 @@
 const ENV = 'local';
 const SERVER = {
   local: 'http://localhost:3000',
-  prod: 'http://35.180.39.52:3000'
+  prod: 'https://moreorlessexpensive.com:3000'
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   update();
   
+  document.querySelector('#perPage')
+    .addEventListener('change', handlePerPage);
+
   document.querySelector('#previous')
     .addEventListener('click', handlePrevious);
 
@@ -26,6 +29,12 @@ window.addEventListener('DOMContentLoaded', () => {
     .addEventListener('click', handleUpload);
 
 });
+
+const handlePerPage = event => {
+  document.querySelector('#page').value = 1;
+
+  update();
+}
 
 const handlePrevious = event => {
   const page = document.querySelector('#page');
@@ -189,9 +198,15 @@ const handleUpload = async event => {
   
   products.forEach(product => delete product._id);
 
-  for (let product of products) {
-    axios.post(`${SERVER[ENV]}/products`, product);
-  }
+  $('#upload.modal').modal('show');
+
+  Promise
+    .all(products.map(product => axios.post(`${SERVER[ENV]}/products`, product)))
+    .finally(() => {
+      update();
+
+      $('#upload.modal').modal('hide');
+    });
 }
 
 const readJSON = json => new Promise((resolve, reject) => {

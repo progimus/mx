@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
+const https = require('https');
+const path = require('path');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const path = require('path');
-const https = require('https');
-const fs = require('fs');
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/more_expensive');
@@ -22,7 +22,8 @@ const Product = mongoose.model(
     links: new Schema({
       amazon: String,
       affiliates: String
-    })
+    }),
+    locale: String
   })
 );
 
@@ -106,7 +107,11 @@ app.delete('/products/:id', (req, res) => {
   });
 });
 
-https.createServer({
-  key: fs.readFileSync('/etc/letsencrypt/live/moreorlessexpensive.com-0001/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/moreorlessexpensive.com-0001/cert.pem'),
-}, app).listen(3000, () => console.log('Server running on port 3000.'))
+if (process.env.NODE_ENV === 'production') {
+  https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/moreorlessexpensive.com-0001/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/moreorlessexpensive.com-0001/cert.pem'),
+  }, app).listen(3000, () => console.log('Server running on port 3000.'))
+} else {
+  app.listen(3000, () => console.log('Server running on port 3000.'));
+}
