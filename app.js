@@ -19,10 +19,8 @@ const Product = mongoose.model(
     price: Number,
     image: String,
     seller: String,
-    links: new Schema({
-      amazon: String,
-      affiliates: String
-    }),
+    amazonLink: String,
+    affiliatesLink: String,
     locale: String
   })
 );
@@ -37,16 +35,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/index.html'));
-});
-
 app.get('/scripts', (req, res) => {
-  res.sendFile(path.join(__dirname + '/scripts.html'));
+  res.sendFile(path.join(__dirname + '/public/views/scripts.html'));
 })
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname + '/admin.html'));
+  res.sendFile(path.join(__dirname + '/public/views/admin.html'));
 });
 
 app.get('/products/:id?', (req, res) => {
@@ -68,7 +62,9 @@ app.get('/products/:id?', (req, res) => {
       .catch(err => console.log(err));
   }
 
-  Product.find().skip((page - 1) * perPage).limit(perPage)
+  Product.find({locale: req.query.locale})
+    .skip((page - 1) * perPage)
+    .limit(perPage)
     .then(data => res.send(data))
     .catch(err => console.log(err));
 });

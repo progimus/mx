@@ -1,12 +1,9 @@
-const ENV = 'local';
-const SERVER = {
-  local: 'http://localhost:3000',
-  prod: 'https://moreorlessexpensive.com:3000'
-}
-
 window.addEventListener('DOMContentLoaded', () => {
   update();
-  
+
+  document.querySelector('#filter')
+    .addEventListener('click', update);
+
   document.querySelector('#perPage')
     .addEventListener('change', handlePerPage);
 
@@ -53,18 +50,17 @@ const handleNext = event => {
 }
 
 const update = event => {
-  const perPage = document.querySelector('select');
+  const locale = document.querySelector('#locale');
+  const perPage = document.querySelector('#perPage');
   const page = document.querySelector('#page');
 
-  axios.get(`${SERVER[ENV]}/products?page=${page.value || 1}&per_page=${perPage.value || 1}`)
+  axios.get(`${API_URL}/products?locale=${locale.value}&page=${page.value || 1}&per_page=${perPage.value || 1}`)
     .then(response => display(response.data))
     .catch(error => console.log(error));
 }
 
 
 const display = data => {
-  if (!data.length) return;
-
   const tbody = document.querySelector('tbody');
 
   for (let child of [...tbody.children]) {
@@ -150,10 +146,8 @@ const handleModalSave = event => {
     name: modal.querySelector('#name').value,
     price: modal.querySelector('#price').value,
     image: modal.querySelector('#image').value,
-    links: {
-      amazon: modal.querySelector('#amazon').value,
-      affiliates: modal.querySelector('#affiliates').value
-    }
+    amazonLink: modal.querySelector('#amazon').value,
+    affiliatesLink: modal.querySelector('#affiliates').value
   })
   .then(response => console.log(response))
   .catch(error => console.log(error));
@@ -167,7 +161,7 @@ const handleRemove = event => {
     .catch(error => console.log(error));
 }
 
-const handleEdit = ({_id: id, name, price, image, links}) => {
+const handleEdit = ({_id: id, name, price, image, amazonLink, affiliatesLink}) => {
   const modal = document.querySelector('.modal');
   
   modal.querySelector('#id').textContent = id;
@@ -175,8 +169,8 @@ const handleEdit = ({_id: id, name, price, image, links}) => {
   modal.querySelector('#price').value = price;
   modal.querySelector('img#image').src = image;
   modal.querySelector('input#image').value = image;
-  modal.querySelector('#amazon').value = links.amazon;
-  modal.querySelector('#affiliates').value = links.affiliates;
+  modal.querySelector('#amazon').value = amazonLink;
+  modal.querySelector('#affiliates').value = affiliatesLink;
 
   modal.style.display = 'block';
 }

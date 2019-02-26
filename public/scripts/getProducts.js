@@ -1,9 +1,8 @@
-<pre>
 const category = '';
 const subcategory = '';
 const search = '';
 const seller = '';
-const quantity = 20;
+const quantity = 5;
 const locale = 'es';
 
 const init = async () => {  
@@ -75,15 +74,13 @@ const getProducts = () => {
       price: parseFloat(
         tr.querySelector('.ac-product-price:last-child')
           .textContent
-          .replace(/\./g, '')
-          .replace(/,/g, '.')
-          .replace('€', '')
+          .replace(/\r?\n|\r/g, '')
+          .replace(/[€$\.,]/g, '')
+          .replace(/\d{2}$/g, '.$&')
       ),
       image: tr.querySelector('.product-image > img').src,
-      links: {
-        amazon: tr.querySelector('.product-name a').href.replace(/\?.*$/, ''),
-        affiliates: textareas.item(i).value
-      },
+      amazonLink: tr.querySelector('.product-name a').href.replace(/\?.*$/, ''),
+      affiliatesLink: textareas.item(i).value,
       locale: locale
     });
   }
@@ -101,4 +98,3 @@ const save = products => {
 }
 
 init();
-</pre>
