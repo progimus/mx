@@ -132,7 +132,7 @@ const display = data => {
 const handleTableSave = event => {
   const tr = event.target.closest('tr');
 
-  axios.put(`${SERVER[ENV]}/products/${tr.querySelector('#id').textContent}`,{
+  axios.put(`${API_URL}/products/${tr.querySelector('#id').textContent}`,{
     name: tr.querySelector('#name').value,
     price: tr.querySelector('#price').value
   })
@@ -142,7 +142,7 @@ const handleTableSave = event => {
 
 const handleModalSave = event => {
   const modal = document.querySelector('.modal');
-  axios.put(`${SERVER[ENV]}/products/${modal.querySelector('#id').textContent}`,{
+  axios.put(`${API_URL}/products/${modal.querySelector('#id').textContent}`,{
     name: modal.querySelector('#name').value,
     price: modal.querySelector('#price').value,
     image: modal.querySelector('#image').value,
@@ -156,7 +156,7 @@ const handleModalSave = event => {
 const handleRemove = event => {
   const tr = event.target.closest('tr');
 
-  axios.delete(`${SERVER[ENV]}/products/${tr.querySelector('#id').textContent}`)
+  axios.delete(`${API_URL}/products/${tr.querySelector('#id').textContent}`)
     .then(response => tr.parentNode.removeChild(tr))
     .catch(error => console.log(error));
 }
@@ -195,7 +195,7 @@ const handleUpload = async event => {
   $('#upload.modal').modal('show');
 
   Promise
-    .all(products.map(product => axios.post(`${SERVER[ENV]}/products`, product)))
+    .all(products.map(product => axios.post(`${API_URL}/products`, product)))
     .finally(() => {
       update();
 
