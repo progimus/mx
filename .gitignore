@@ -1,4 +1,2 @@
 /node_modules
-/public/admin.js:1:100
-.env
-public/js/admin-config.js
+/public/js/admin/config.js
