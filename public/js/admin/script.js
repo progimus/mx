@@ -59,7 +59,6 @@ const update = event => {
     .catch(error => console.log(error));
 }
 
-
 const display = data => {
   const tbody = document.querySelector('tbody');
 
@@ -78,11 +77,29 @@ const display = data => {
 
     const tdName = document.createElement('td');
     const inputName = document.createElement('input');
+    const progress = document.createElement('div');
+    const progressBar = document.createElement('div');
+    const smallCounter = document.createElement('small');
+    const length = name.length;
+    const percentage = length * 100 / MAX_NAME_LENGTH;
     inputName.setAttribute('type', 'text')
     inputName.setAttribute('id', 'name');
     inputName.setAttribute('value', name);
     inputName.classList.add('form-control');
+    inputName.addEventListener('change', handleTableSave);
+    inputName.addEventListener('input', handleInputName);
+    progress.classList.add('mt-2');
+    progress.style.height = '3px';
+    progress.classList.add('progress');
+    progressBar.classList.add('progress-bar');
+    progressBar.style.width = `${percentage}%`;
+    if (length > MAX_NAME_LENGTH) { progressBar.classList.add('bg-danger'); }
+    progress.appendChild(progressBar);
+    smallCounter.classList.add('d-block', 'text-right', 'text-muted');
+    smallCounter.textContent = `${name.length} / ${MAX_NAME_LENGTH}`;
     tdName.appendChild(inputName);
+    tdName.appendChild(progress);
+    tdName.appendChild(smallCounter);
     tr.appendChild(tdName);
 
     const tdPrice = document.createElement('td');
@@ -91,6 +108,7 @@ const display = data => {
     inputPrice.setAttribute('id', 'price');
     inputPrice.setAttribute('value', price);
     inputPrice.classList.add('form-control');
+    inputPrice.addEventListener('change', handleTableSave);
     tdPrice.appendChild(inputPrice);
     tr.appendChild(tdPrice);
 
@@ -129,10 +147,28 @@ const display = data => {
   }
 }
 
+const handleInputName = event => {
+  const input = event.target;
+  const progress = input.nextElementSibling;
+  const progressBar = progress.firstElementChild;
+  const smallCounter = progress.nextElementSibling;
+
+  const length = input.value.length;
+  const percentage = length * 100 / MAX_NAME_LENGTH;
+  
+  progressBar.style.width = `${percentage}%`;
+
+  length > MAX_NAME_LENGTH
+    ? progressBar.classList.add('bg-danger')
+    : progressBar.classList.remove('bg-danger');
+
+  smallCounter.textContent = `${length} / ${MAX_NAME_LENGTH}`;
+};
+
 const handleTableSave = event => {
   const tr = event.target.closest('tr');
 
-  axios.put(`${API_URL}/products/${tr.querySelector('#id').textContent}`,{
+  axios.put(`${API_URL}/products/${tr.querySelector('#id').textContent}`, {
     name: tr.querySelector('#name').value,
     price: tr.querySelector('#price').value
   })
@@ -142,7 +178,7 @@ const handleTableSave = event => {
 
 const handleModalSave = event => {
   const modal = document.querySelector('.modal');
-  axios.put(`${API_URL}/products/${modal.querySelector('#id').textContent}`,{
+  axios.put(`${API_URL}/products/${modal.querySelector('#id').textContent}`, {
     name: modal.querySelector('#name').value,
     price: modal.querySelector('#price').value,
     image: modal.querySelector('#image').value,
