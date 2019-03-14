@@ -7,6 +7,9 @@ window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#perPage')
     .addEventListener('change', handlePerPage);
 
+  document.querySelector('#page')
+    .addEventListener('change', handlePage);
+
   document.querySelector('#previous')
     .addEventListener('click', handlePrevious);
 
@@ -30,6 +33,10 @@ window.addEventListener('DOMContentLoaded', () => {
 const handlePerPage = event => {
   document.querySelector('#page').value = 1;
 
+  update();
+}
+
+const handlePage = event => {
   update();
 }
 
@@ -67,7 +74,7 @@ const display = data => {
   }
 
   for (let field of data) {
-    const {_id:id, name, price, image} = field;
+    const {_id: id, name, price, image} = field;
     const tr = document.createElement('tr');
 
     const tdId = document.createElement('td');

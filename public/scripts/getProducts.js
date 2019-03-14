@@ -1,9 +1,8 @@
-const category = '';
-const subcategory = '';
-const search = '';
-const seller = '';
-const quantity = 5;
-const locale = 'es';
+const serachForm = document.querySelector('#ac-productlinks-search-form');
+const category = serachForm.category.value;
+const subcategory = serachForm.subcategory.value;
+const locale = 'com';
+const quantity = 100;
 
 const init = async () => {  
   await scroll(quantity);
@@ -92,7 +91,7 @@ const save = products => {
   const link = document.createElement('a');
   const content = JSON.stringify(products);
   link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-  link.setAttribute('download', `products.json`);
+  link.setAttribute('download', `${category}_${subcategory}.json`);
   document.body.appendChild(link);
   link.click();
 }
